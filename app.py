@@ -38,7 +38,7 @@ enter_info = Label(root, text="Εισάγετε τις παρακάτω πληρ
 enter_info.grid(row=0, column=1, columnspan=4, padx=5, pady=5)
 
 # Length and Weight labels and entry widgets
-Label(root, text="Μήκος", bg="lightgrey").grid(row=1, column=1, padx=5, pady=5, sticky=E)
+Label(root, text="Πλάτος", bg="lightgrey").grid(row=1, column=1, padx=5, pady=5, sticky=E)
 Label(root, text="millimeters", bg="lightgrey").grid(row=1, column=3, sticky=W)
 
 length = Entry(root, bd=3)
