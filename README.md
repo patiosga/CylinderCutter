@@ -14,6 +14,6 @@ In the excel file the data is stored in columns like so:
 3. The final 1-5 columns (depending on how many different piece sizes you want to use) are the piece size  
    at the top and the total weight of all the same pieces in each specific combination (row)  
       
-Also, because my dad hasn't any experience with handling code, so i made a GUI to make his  
+Also, my dad hasn't any experience with handling code, so i made a GUI to make his  
 job a little easier by using the tkinter library.
 
