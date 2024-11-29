@@ -1,5 +1,4 @@
 import itertools
-import heapq
 from comb import comb
 
 #w = 1500  # πλάτος ρολού σε mm
@@ -13,49 +12,25 @@ from comb import comb
 #     dic[cut] = cut * weight_factor  # kg of its cut
 
 
-def add_to_heap(heap, item: comb, max_size): # min heap that has the negative remaining_lenght of the combinations and hence is used as a max heap
-    if len(heap) < max_size: # If the heap is not full, add the item
-        heapq.heappush(heap, item)
-    elif heap[0].__lt__(item):
-        # If the negative weight of the worst (junk-wise) combination (top element)
-        # is smaller (larger by abs) replace it with the new item
-        heapq.heappushpop(heap, item)
-
-
-def heap_sort(heap):  # but alternative (redoes the weights to be positive and reverses the list)
-    # Initialize an empty list to store the sorted elements
-    sorted_arr = []
-    # Loop through the heap, extracting the smallest element and appending it to the sorted list
-    while True:
-        try:
-            popped: comb = heapq.heappop(heap)
-            popped.remaining_length *= (-1)  # multiply with (-1) to reverse the damage done by the necessity of max heap
-            sorted_arr.append(popped)
-
-        except IndexError:  # empty heap
-            break
-
-    # Reverse the list to get the elements in ascending order
-    sorted_arr.reverse()
-    # Return the sorted list
-    return sorted_arr
-
-
-def valid_combinations(width, possible_cuts, max_size):
-    valid_solutions = []
-    heapq.heapify(valid_solutions)  # binary heap
-    for i in range(1, 20):  # δεν ειναι δυνατο να εχει πανω απο 20 κομματια
+def valid_combinations(width, possible_cuts, k_results=100):
+    min_cut = min(possible_cuts)
+    valid_solutions = [[] for _ in range(min_cut)]  # create min_cut buckets --> a cut cannot have a remaining length greater or equal than the minimum cut length
+    for i in range(1, 15):  # δεν ειναι δυνατο να εχει πανω απο 15 κομματια
         for combination in itertools.combinations_with_replacement(possible_cuts, i):  # r-μεταθεσεις οπου r=1, 2, ..., 14
             temp_sum = sum(combination)
-            if temp_sum <= width:  # οι συνδυασμοι που εχουν μήκος μικροτερο ή ισο με το width
-                # Heap implementation
-                temp_comb = comb(combination, (-1) * (width - temp_sum))  # combination object
-                add_to_heap(valid_solutions, temp_comb, max_size)
-                # multiply with (-1) to have it work as a max heap
+            remaining_length = width - temp_sum
+            if temp_sum <= width and remaining_length < min_cut:  # combinations should have a sum less than or equal to the width and the remaining length should be less than the minimum cut length
+                temp_comb = comb(combination, remaining_length)  # combination object
+                valid_solutions[temp_comb.remaining_length].append(temp_comb)  # add the combination to the corresponding bucket
+    
+    # flatten the buckets until we get k_results valid solutions
+    flattened_solutions = []
+    for bucket in valid_solutions:
+        flattened_solutions.extend(bucket)
+        if len(flattened_solutions) >= k_results:
+            break
 
-                # Implementation without heap
-                # valid_solutions.append(comb(combination, width - temp_sum))
-    return valid_solutions
+    return flattened_solutions[:k_results]  # return the first k_results valid solutions
 
 
 def get_number_of_single_cut(solution, cut):  # πλήθος των κομματιων που εχουν το μηκος cut
@@ -63,21 +38,18 @@ def get_number_of_single_cut(solution, cut):  # πλήθος των κομματ
 
 
 def mother_func(w, total_weight, possible_cuts, n: int):
+    '''
+    w: int, πλάτος ρολού σε mm
+    total_weight: int, συνολικό βάρος κυλίνδρου σε kg
+    possible_cuts: list[int], όλα τα δυνατά μήκη κομματιών σε mm
+    n: int, ο αριθμός των πρώτων λύσεων που θέλουμε να εξάγουμε
+    '''
     weight_factor = total_weight / w  # kg/mm
     dic = {}  # λεξικό με τα μήκη των κομματιών και το βάρος τους
     for cut in possible_cuts:
         dic[cut] = cut * weight_factor  # kg of each cut
 
-    solutions = valid_combinations(w, possible_cuts, n)
-
-
-    # Heap implementation
-    solutions: list[comb] = heap_sort(solutions)  # sort the top-k elements heap
-
-    # Implementation without heap
-    # solutions = sorted(solutions, key=lambda x: x.remaining_length)  # ταξινόμηση με βάση το μήκος που απομένει
-
-    # solutions = solutions[:n]  # πρώτες n λύσεις
+    solutions = valid_combinations(w, possible_cuts, k_results=n)[:n]  # πρώτες n λύσεις με λιγότερο χαμένο χαρτί
 
     for solution in solutions:  # υπολογισμός βάρους όλων των κομματιών του εκάστοτε μήκους στον εκάστοτε συνδυασμό
         weights_dic = {}
