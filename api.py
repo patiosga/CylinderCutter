@@ -1,4 +1,4 @@
-import itertools
+from itertools import combinations_with_replacement
 from comb import comb
 
 #w = 1500  # πλάτος ρολού σε mm
@@ -16,7 +16,7 @@ def valid_combinations(width, possible_cuts, k_results=100):
     min_cut = min(possible_cuts)
     valid_solutions = [[] for _ in range(min_cut)]  # create min_cut buckets --> a cut cannot have a remaining length greater or equal than the minimum cut length
     for i in range(1, 15):  # δεν ειναι δυνατο να εχει πανω απο 15 κομματια
-        for combination in itertools.combinations_with_replacement(possible_cuts, i):  # r-μεταθεσεις οπου r=1, 2, ..., 14
+        for combination in combinations_with_replacement(possible_cuts, i):  # r-μεταθεσεις οπου r=1, 2, ..., 14
             temp_sum = sum(combination)
             remaining_length = width - temp_sum
             if temp_sum <= width and remaining_length < min_cut:  # combinations should have a sum less than or equal to the width and the remaining length should be less than the minimum cut length
@@ -49,7 +49,7 @@ def mother_func(w, total_weight, possible_cuts, n: int):
     for cut in possible_cuts:
         dic[cut] = cut * weight_factor  # kg of each cut
 
-    solutions = valid_combinations(w, possible_cuts, k_results=n)[:n]  # πρώτες n λύσεις με λιγότερο χαμένο χαρτί
+    solutions = valid_combinations(w, possible_cuts, k_results=n)  # πρώτες n λύσεις με λιγότερο χαμένο χαρτί
 
     for solution in solutions:  # υπολογισμός βάρους όλων των κομματιών του εκάστοτε μήκους στον εκάστοτε συνδυασμό
         weights_dic = {}
@@ -65,7 +65,7 @@ def mother_func(w, total_weight, possible_cuts, n: int):
 # Εξαγωγή σε αρχείο excel
 # import csv
 import time
-import pandas as pd
+from pandas import DataFrame
 
 def excel_export(solutions: list[comb], possible_cuts, filename):
     # Create a DataFrame to store the data
@@ -82,7 +82,7 @@ def excel_export(solutions: list[comb], possible_cuts, filename):
             data[cut].append(weights[cut])
 
     # Create a Pandas DataFrame from the data
-    df = pd.DataFrame(data)
+    df = DataFrame(data)
 
     # Save the DataFrame to an Excel file
     df.to_excel(filename, index=False)
