@@ -78,6 +78,6 @@ s280 = IntVar()
 Checkbutton(frame, width=10, text = '280', variable=s280, bg="lightgrey").grid(row=5)
 
 
-Button(root, text="Εξαγωγή σε csv", command=export).grid(row=5, column=1, columnspan=4, padx=5, pady=5)
+Button(root, text="Εξαγωγή σε excel", command=export).grid(row=5, column=1, columnspan=4, padx=5, pady=5)
 
 root.mainloop()
