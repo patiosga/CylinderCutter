@@ -21,10 +21,5 @@ Here is a screenshot of the GUI:
   
 ![GUI Screenshot](gui_screenshot.png)
   
-Excel visualisation instructions:  
-  
-After opening the csv with excel you select the whole first column. Then, you go to:
-Data --> Text to Columns --> Choose "Delimited" --> Next --> Choose the delimiter:  
-"Other" and write " / " in the text input --> Hit OK  
 
 
