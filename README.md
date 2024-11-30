@@ -17,7 +17,7 @@ In the excel file the data is stored in columns like so:
 Also, because my dad hasn't any experience with handling code i made a GUI to make his  
 job a little easier by using the tkinter library.  
   
-Here is a screenshot of the GUI:  
+Here is a screenshot of the GUI:   
   
 ![GUI Screenshot](gui_screenshot.png)
   
